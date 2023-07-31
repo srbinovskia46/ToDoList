@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         rvTodoItems.adapter = todoAdapter
         rvTodoItems.layoutManager = LinearLayoutManager(this)
 
+        todoAdapter.loadListToInternalStorage(this)
+
         btnAddTodo.setOnClickListener {
             val todoTitle = etTodoTitle.text.toString()
             if (todoTitle.isNotEmpty()) {
@@ -34,10 +36,12 @@ class MainActivity : AppCompatActivity() {
                 todoAdapter.addTodo(todo)
                 etTodoTitle.text.clear()
             }
+            todoAdapter.saveListToInternalStorage(this)
         }
 
         btnDeleteDoneTodos.setOnClickListener {
             todoAdapter.deleteDoneTodos()
+            todoAdapter.saveListToInternalStorage(this)
         }
 
         btnSave.setOnClickListener {
