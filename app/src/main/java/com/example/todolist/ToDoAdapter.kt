@@ -31,6 +31,10 @@ class ToDoAdapter(
         )
     }
 
+    fun getTodoItems() : MutableList<Todo>{
+        return todos
+    }
+
     fun addTodo(todo: Todo) {
         todos.add(todo)
         notifyItemInserted(todos.size - 1)
