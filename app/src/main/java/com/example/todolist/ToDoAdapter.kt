@@ -1,5 +1,6 @@
 package com.example.todolist
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.view.LayoutInflater
@@ -40,6 +41,7 @@ class ToDoAdapter(
         notifyItemInserted(todos.size - 1)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun deleteDoneTodos() {
         todos.removeAll { todo ->
             todo.isChecked
@@ -84,8 +86,8 @@ class ToDoAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun loadListToInternalStorage(context: Context){
-        val todoList: MutableList<Todo> = mutableListOf()
         try{
             val fileInputStream = context.openFileInput("todolist.txt")
             val objectInputStream = ObjectInputStream(fileInputStream)

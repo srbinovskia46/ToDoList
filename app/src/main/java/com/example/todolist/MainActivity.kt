@@ -3,11 +3,15 @@ package com.example.todolist
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager.OnActivityDestroyListener
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.app.NotificationCompat
@@ -35,8 +39,6 @@ class MainActivity : AppCompatActivity() {
         val btnAddTodo = findViewById<Button>(R.id.btnAddTodo)
         val etTodoTitle = findViewById<EditText>(R.id.edTodoTitle)
         val btnDeleteDoneTodos = findViewById<Button>(R.id.btnDeleteDoneTodos)
-        val btnSave = findViewById<Button>(R.id.btnSave)
-        val btnLoad = findViewById<Button>(R.id.btnLoad)
 
         //Get list of to-do items from the adapter
         val todoList = todoAdapter.getTodoItems()
@@ -56,51 +58,59 @@ class MainActivity : AppCompatActivity() {
                 etTodoTitle.text.clear()
             }
             todoAdapter.saveListToInternalStorage(this)
+            showToDoListNotification(todoList)
         }
 
         btnDeleteDoneTodos.setOnClickListener {
             todoAdapter.deleteDoneTodos()
             todoAdapter.saveListToInternalStorage(this)
-        }
-
-        btnSave.setOnClickListener {
-            todoAdapter.saveListToInternalStorage(this)
             showToDoListNotification(todoList)
         }
+    }
 
-        btnLoad.setOnClickListener {
-            todoAdapter.loadListToInternalStorage(this)
+    private fun createPendingIntent(): PendingIntent? {
+        val intent = Intent(this, MainActivity::class.java)
+        val pendingIntent = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         }
+
+        return pendingIntent
     }
 
     @SuppressLint("MissingPermission")
     fun showToDoListNotification(todoList: List<Todo>){
-        val notificationText = buildNotificationText(todoList)
+            var notificationText = buildNotificationText(todoList)
 
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("ToDo List")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentText("Todo")
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText(notificationText))
-            .build()
+            if (todoList.isEmpty()){
+                notificationText = "All tasks competed"
+            }
 
-        val notificationManager = NotificationManagerCompat.from(this)
-        notificationManager.notify(NOTIFICATION_ID, notification)
-    }
+            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("ToDo List")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(notificationText))
+                .setContentIntent(createPendingIntent())
+                .build()
+
+            val notificationManager = NotificationManagerCompat.from(this)
+            notificationManager.notify(NOTIFICATION_ID, notification)
+        }
 
     private fun buildNotificationText(todoList: List<Todo>): String {
         val stringBuilder = StringBuilder()
+        stringBuilder.append("Tasks:\n")
         for (item in todoList){
-            stringBuilder.append(item.title).append("\n")
+            stringBuilder.append("• ").append(item.title).append("\n")
         }
         return stringBuilder.toString()
     }
 
 
 
-    fun createNotificationChannel(){
+    private fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT).apply {
