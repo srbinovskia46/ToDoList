@@ -6,6 +6,7 @@ import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,10 +18,12 @@ class ToDoAdapter(
     private val todos: MutableList<Todo>
 ) : RecyclerView.Adapter<ToDoAdapter.TodoViewHolder>() {
 
-    class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TodoViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         val tvTodoTitle: TextView = itemView.findViewById(R.id.tvTodoTitle)
         val cbDone: CheckBox = itemView.findViewById(R.id.cbDone)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         return TodoViewHolder(
@@ -29,11 +32,18 @@ class ToDoAdapter(
                 parent,
                 false
             )
+
         )
     }
 
-    fun getTodoItems() : MutableList<Todo>{
+    fun getTodoItems(): MutableList<Todo> {
         return todos
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun editToDoItem(todo: Todo, newTitle: String){
+        todo.title = newTitle
+        notifyDataSetChanged()
     }
 
     fun addTodo(todo: Todo) {
@@ -71,31 +81,33 @@ class ToDoAdapter(
                 toggleStrikeThrough(holder.tvTodoTitle, isChecked)
                 curTodo.isChecked = !curTodo.isChecked
             }
+
         }
     }
 
-    fun saveListToInternalStorage(context: Context){
+
+    fun saveListToInternalStorage(context: Context) {
         try {
             val fileOutputStream = context.openFileOutput("todolist.txt", Context.MODE_PRIVATE)
             val objectOutputStream = ObjectOutputStream(fileOutputStream)
             objectOutputStream.writeObject(todos)
             objectOutputStream.close()
             fileOutputStream.close()
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun loadListToInternalStorage(context: Context){
-        try{
+    fun loadListToInternalStorage(context: Context) {
+        try {
             val fileInputStream = context.openFileInput("todolist.txt")
             val objectInputStream = ObjectInputStream(fileInputStream)
             val tmpList = objectInputStream.readObject()
-            if (tmpList is List<*>){
+            if (tmpList is List<*>) {
                 todos.clear()
-                for (item in tmpList){
-                    if (item is Todo){
+                for (item in tmpList) {
+                    if (item is Todo) {
                         todos.add(item)
                     }
                 }
@@ -103,10 +115,15 @@ class ToDoAdapter(
             fileInputStream.close()
             objectInputStream.close()
             notifyDataSetChanged()
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
-        }catch (e: ClassNotFoundException){
+        } catch (e: ClassNotFoundException) {
             e.printStackTrace()
         }
     }
+
+    interface OnTodoLongClickListener {
+        fun onLongClick(todo: Todo)
+    }
+
 }
