@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity(){
 
         createNotificationChannel()
 
-        todoAdapter = ToDoAdapter(mutableListOf())
+        todoAdapter = ToDoAdapter(mutableListOf()){
+            todo -> showEditDialog(todo)
+        }
 
         val rvTodoItems = findViewById<RecyclerView>(R.id.rvTodoItems)
         val btnAddTodo = findViewById<Button>(R.id.btnAddTodo)
@@ -87,11 +89,14 @@ class MainActivity : AppCompatActivity(){
         var notificationText = buildNotificationText(todoList)
 
         if (todoList.isEmpty()) {
-            notificationText = "All tasks competed"
+            notificationText = "All tasks completed"
         }
 
+        val contentText = generateContentText(todoAdapter.getTodoItems())
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("ToDo List")
+            //.setContentTitle("ToDo List")
+            .setContentTitle(contentText)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setStyle(
@@ -103,6 +108,17 @@ class MainActivity : AppCompatActivity(){
 
         val notificationManager = NotificationManagerCompat.from(this)
         notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun generateContentText(todoList: List<Todo>): String{
+        val countOfListItems = todoList.count()
+        if (countOfListItems == 1){
+            return "You have 1 task to complete"
+        }else if (countOfListItems == 0){
+            return  "All tasks completed"
+        }else{
+            return String.format("You have %d tasks to complete", countOfListItems)
+        }
     }
 
     private fun buildNotificationText(todoList: List<Todo>): String {
@@ -134,19 +150,37 @@ class MainActivity : AppCompatActivity(){
     fun showEditDialog(todo: Todo) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit, null)
         val editTodoTitle = dialogView.findViewById<EditText>(R.id.etEditTitle)
+        val editSaveButton = dialogView.findViewById<Button>(R.id.btnSave)
+        val editCancelButton = dialogView.findViewById<Button>(R.id.btnCancel)
         editTodoTitle.setText(todo.title)
 
-        AlertDialog.Builder(this)
+        val alertDialog = AlertDialog.Builder(this)
             .setTitle("Edit Todo")
             .setView(dialogView)
-            .setPositiveButton("Save") { _, _ ->
-                val editedTitle = editTodoTitle.text.toString()
-                if (editedTitle.isNotEmpty()) {
-                    todo.title = editedTitle
-                    todoAdapter.notifyDataSetChanged()
-                }
-            }
-            .setNegativeButton("Cancel", null)
+//            .setPositiveButton("Save") { _, _ ->
+//                val editedTitle = editTodoTitle.text.toString()
+//                if (editedTitle.isNotEmpty()) {
+//                    todo.title = editedTitle
+//                    todoAdapter.notifyDataSetChanged()
+//                }
+//            }
+            //.setNegativeButton("Cancel", null)
             .show()
+
+        editSaveButton.setOnClickListener {
+            val editedTitle = editTodoTitle.text.toString()
+            if (editedTitle.isNotEmpty()){
+                todo.title = editedTitle
+                todoAdapter.notifyDataSetChanged()
+            }
+            showToDoListNotification(todoAdapter.getTodoItems())
+            todoAdapter.saveListToInternalStorage(this)
+            alertDialog.cancel()
+        }
+
+        editCancelButton.setOnClickListener {
+            alertDialog.cancel()
+        }
+
     }
 }

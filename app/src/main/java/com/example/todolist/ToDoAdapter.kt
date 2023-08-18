@@ -15,13 +15,15 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 class ToDoAdapter(
-    private val todos: MutableList<Todo>
+    private val todos: MutableList<Todo>,
+    private val onEditClickListener: ((Todo) -> Unit)? = null
 ) : RecyclerView.Adapter<ToDoAdapter.TodoViewHolder>() {
 
     class TodoViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         val tvTodoTitle: TextView = itemView.findViewById(R.id.tvTodoTitle)
         val cbDone: CheckBox = itemView.findViewById(R.id.cbDone)
+        val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
     }
 
 
@@ -38,12 +40,6 @@ class ToDoAdapter(
 
     fun getTodoItems(): MutableList<Todo> {
         return todos
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun editToDoItem(todo: Todo, newTitle: String){
-        todo.title = newTitle
-        notifyDataSetChanged()
     }
 
     fun addTodo(todo: Todo) {
@@ -80,6 +76,10 @@ class ToDoAdapter(
             holder.cbDone.setOnCheckedChangeListener { _, isChecked ->
                 toggleStrikeThrough(holder.tvTodoTitle, isChecked)
                 curTodo.isChecked = !curTodo.isChecked
+            }
+
+            holder.btnEdit.setOnClickListener{
+                onEditClickListener?.invoke(curTodo)
             }
 
         }
@@ -121,9 +121,4 @@ class ToDoAdapter(
             e.printStackTrace()
         }
     }
-
-    interface OnTodoLongClickListener {
-        fun onLongClick(todo: Todo)
-    }
-
 }
