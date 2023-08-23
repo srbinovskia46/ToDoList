@@ -14,7 +14,7 @@
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:text="Example"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnEdit"
         app:layout_constraintStart_toEndOf="@+id/cbDone"
@@ -24,6 +24,10 @@
         android:id="@+id/cbDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColorHighlight="@color/colorComboBlue"
+        app:buttonIconTint="@color/colorComboBlue"
+        app:buttonIconTintMode="src_atop"
+        
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,6 +38,9 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorComboBlue"
         android:text="Edit"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/colorComboBlue"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

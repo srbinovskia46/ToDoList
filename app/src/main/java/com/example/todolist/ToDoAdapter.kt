@@ -34,7 +34,6 @@ class ToDoAdapter(
                 parent,
                 false
             )
-
         )
     }
 
@@ -78,7 +77,7 @@ class ToDoAdapter(
                 curTodo.isChecked = !curTodo.isChecked
             }
 
-            holder.btnEdit.setOnClickListener{
+            holder.btnEdit.setOnClickListener {
                 onEditClickListener?.invoke(curTodo)
             }
 
@@ -120,5 +119,14 @@ class ToDoAdapter(
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()
         }
+    }
+
+    fun addFirst(todo: Todo){
+        todos.add(0, todo)
+        notifyItemInserted(0)
+    }
+
+    fun reverseOrderOfItems(){
+        todos.reverse()
     }
 }

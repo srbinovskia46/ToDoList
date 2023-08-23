@@ -9,6 +9,7 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +20,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity(){
 
@@ -26,13 +30,18 @@ class MainActivity : AppCompatActivity(){
     val CHANNEL_ID = "channelID"
     val CHANNEL_NAME = "channel name"
     val NOTIFICATION_ID = 0
-
+    var reverseOrder = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         createNotificationChannel()
+
+        // Change the color of ActionBar background
+        supportActionBar!!.setBackgroundDrawable(ColorDrawable(Color.parseColor("#2196F3")))
+
+        //
 
         todoAdapter = ToDoAdapter(mutableListOf()){
             todo -> showEditDialog(todo)
@@ -58,7 +67,12 @@ class MainActivity : AppCompatActivity(){
             val todoTitle = etTodoTitle.text.toString()
             if (todoTitle.isNotEmpty()) {
                 val todo = Todo(todoTitle)
-                todoAdapter.addTodo(todo)
+                if (reverseOrder){
+                    todoAdapter.addFirst(todo)
+                    rvTodoItems.smoothScrollToPosition(0)
+                }else{
+                    todoAdapter.addTodo(todo)
+                }
                 etTodoTitle.text.clear()
             }
             todoAdapter.saveListToInternalStorage(this)
@@ -70,6 +84,26 @@ class MainActivity : AppCompatActivity(){
             todoAdapter.saveListToInternalStorage(this)
             showToDoListNotification(todoList)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if  (item.itemId == R.id.reverse_order){
+            reverseOrder = !reverseOrder
+            todoAdapter.reverseOrderOfItems()
+            val rvTodoItems = findViewById<RecyclerView>(R.id.rvTodoItems)
+            rvTodoItems.adapter = todoAdapter
+            rvTodoItems.layoutManager = LinearLayoutManager(this)
+            todoAdapter.saveListToInternalStorage(this)
+
+        }else if (item.itemId == R.id.help){
+            Toast.makeText(this, "You clicked help", Toast.LENGTH_SHORT).show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
@@ -96,8 +130,9 @@ class MainActivity : AppCompatActivity(){
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             //.setContentTitle("ToDo List")
-            .setContentTitle(contentText)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentText(contentText)
+//            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setStyle(
                 NotificationCompat.BigTextStyle()

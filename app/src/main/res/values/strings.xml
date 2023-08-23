@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ToDoList</string>
+    <string name="reverse_order">Reverse order of items</string>
+    <string name="help">Help</string>
 </resources>
