@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
@@ -22,7 +23,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.view.menu.MenuView.ItemView
 
 class MainActivity : AppCompatActivity(){
 
@@ -40,8 +43,8 @@ class MainActivity : AppCompatActivity(){
 
         // Change the color of ActionBar background
         supportActionBar!!.setBackgroundDrawable(ColorDrawable(Color.parseColor("#2196F3")))
-
-        //
+        // Change the color of action bar text
+        supportActionBar?.setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.app_name) + "</font>"))
 
         todoAdapter = ToDoAdapter(mutableListOf()){
             todo -> showEditDialog(todo)

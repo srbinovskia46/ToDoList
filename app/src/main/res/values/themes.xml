@@ -3,7 +3,13 @@
     <style name="Base.Theme.ToDoList" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:statusBarColor">@color/colorComboBlue</item>
+        <item name="colorPrimary">@color/darkBackground</item>
+        <item name="colorPrimaryDark">@color/colorComboBlue</item>
+        <item name="colorAccent">@color/colorComboBlue</item>
+        <item name="android:textColorSecondary">@color/colorComboBlue</item>
     </style>
 
     <style name="Theme.ToDoList" parent="Base.Theme.ToDoList" />
