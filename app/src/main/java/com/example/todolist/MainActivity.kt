@@ -23,9 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.view.menu.MenuView.ItemView
 
 class MainActivity : AppCompatActivity(){
 
@@ -66,6 +65,29 @@ class MainActivity : AppCompatActivity(){
 
         showToDoListNotification(todoAdapter.getTodoItems())
 
+        etTodoTitle.setOnEditorActionListener{
+            _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE){
+                val todoTitle = etTodoTitle.text.toString().trim()
+
+                if (todoTitle.isNotEmpty()){
+                    val todo = Todo(todoTitle)
+                    if (reverseOrder) {
+                        todoAdapter.addFirst(todo)
+                        rvTodoItems.smoothScrollToPosition(0)
+                    }
+                    else{
+                        todoAdapter.addTodo(todo)
+                        rvTodoItems.smoothScrollToPosition(todoList.size-1)
+                    }
+
+                    etTodoTitle.text.clear()
+                }
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+
         btnAddTodo.setOnClickListener {
             val todoTitle = etTodoTitle.text.toString()
             if (todoTitle.isNotEmpty()) {
@@ -75,6 +97,7 @@ class MainActivity : AppCompatActivity(){
                     rvTodoItems.smoothScrollToPosition(0)
                 }else{
                     todoAdapter.addTodo(todo)
+                    rvTodoItems.smoothScrollToPosition(todoList.size-1)
                 }
                 etTodoTitle.text.clear()
             }
@@ -94,17 +117,22 @@ class MainActivity : AppCompatActivity(){
         return true
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if  (item.itemId == R.id.reverse_order){
             reverseOrder = !reverseOrder
             todoAdapter.reverseOrderOfItems()
             val rvTodoItems = findViewById<RecyclerView>(R.id.rvTodoItems)
+            if (reverseOrder){
+                item.title = "Oldest First"
+            }else
+                item.title = "Newest First"
             rvTodoItems.adapter = todoAdapter
             rvTodoItems.layoutManager = LinearLayoutManager(this)
             todoAdapter.saveListToInternalStorage(this)
 
-        }else if (item.itemId == R.id.help){
-            Toast.makeText(this, "You clicked help", Toast.LENGTH_SHORT).show()
+        }else if (item.itemId == R.id.credits){
+            Toast.makeText(this, "Created by srbinovskia46", Toast.LENGTH_LONG).show()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -115,7 +143,7 @@ class MainActivity : AppCompatActivity(){
         val intent = Intent(this, MainActivity::class.java)
         val pendingIntent = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(intent)
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
 
         return pendingIntent
@@ -132,7 +160,7 @@ class MainActivity : AppCompatActivity(){
         val contentText = generateContentText(todoAdapter.getTodoItems())
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            //.setContentTitle("ToDo List")
+            .setContentTitle("ToDoList")
             .setContentText(contentText)
 //            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -161,10 +189,33 @@ class MainActivity : AppCompatActivity(){
 
     private fun buildNotificationText(todoList: List<Todo>): String {
         val stringBuilder = StringBuilder()
-        stringBuilder.append("Tasks:\n")
-        for (item in todoList) {
-            stringBuilder.append("• ").append(item.title).append("\n")
+        if (todoList.size == 1){
+            stringBuilder.append("Task:\n")
+        }else{
+            stringBuilder.append("Tasks:\n")
         }
+
+        if (todoList.size <= 5){
+            for (item in todoList) {
+                stringBuilder.append("• ").append(item.title).append("\n")
+            }
+        }else {
+            var counter = 0
+            for (item in todoList) {
+                if (counter == 5){
+                    val otherTasks = todoList.size - 5
+                    if (otherTasks == 1)
+                        stringBuilder.append("+").append("1 ").append("other task")
+                    else
+                        stringBuilder.append("+").append(todoList.size - 5).append(" other tasks")
+                    break
+                }
+
+                stringBuilder.append("• ").append(item.title).append("\n")
+                counter++
+            }
+        }
+
         return stringBuilder.toString()
     }
 

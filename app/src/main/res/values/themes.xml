@@ -4,13 +4,21 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
         <item name="android:statusBarColor">@color/colorComboBlue</item>
         <item name="colorPrimary">@color/darkBackground</item>
         <item name="colorPrimaryDark">@color/colorComboBlue</item>
         <item name="colorAccent">@color/colorComboBlue</item>
         <item name="android:textColorSecondary">@color/colorComboBlue</item>
+
+        // White settings/menu icon
+        <item name="android:actionOverflowButtonStyle">@style/MyTheme</item>
+
     </style>
 
     <style name="Theme.ToDoList" parent="Base.Theme.ToDoList" />
+
+    <style name="MyTheme" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_baseline_menu_24</item>
+    </style>
 </resources>

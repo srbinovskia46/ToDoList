@@ -11,5 +11,8 @@
         <item name="colorAccent">@color/colorComboBlue</item>
         <item name="android:textColorSecondary">@color/colorComboBlue</item>
 
+        // White settings/menu icon
+        <item name="android:actionOverflowButtonStyle">@style/MyTheme</item>
+
     </style>
 </resources>

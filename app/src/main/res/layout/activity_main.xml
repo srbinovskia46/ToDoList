@@ -24,7 +24,7 @@
         android:layout_marginEnd="2dp"
         android:hint="Enter ToDo Title"
         android:inputType="textCapSentences"
-        android:textColor="#000000"
+        android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/btnAddTodo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -37,7 +37,7 @@
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
         android:backgroundTint="@color/colorComboBlue"
-        android:text="Add Todo"
+        android:text="Add ToDo"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnDeleteDoneTodos"
