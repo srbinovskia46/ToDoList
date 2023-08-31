@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDoify</string>
+    <string name="credits">Кредити</string>
+    <string name="oldest_first">Најстаро Прво</string>
+    <string name="newest_first">Најново Прво</string>
+    <string name="created_by">Креирано од srbinovskia46</string>
+    <string name="all_tasks_completed">Сите задачи се завршени</string>
+    <string name="one_task_to_complete">Имате 1 задача да изавршите</string>
+    <string name="tasks_left_to_complete">Имате %d задачи да изавршите</string>
+    <string name="save_button">Зачувај</string>
+    <string name="cancel_button">Откажи</string>
+    <string name="edit_button">Измени</string>
+    <string name="add_todo_button">Додади Задача</string>
+    <string name="delete_done_button">Избриши Извршени</string>
+    <string name="hint_enter_todo">Внеси Задача</string>
+    <string name="task">Задача:\n</string>
+    <string name="tasks">Задачи:\n</string>
+    <string name="other_task">" друга задача\n"</string>
+    <string name="other_tasks">" други задачи\n"</string>
+    <string name="edit_todo">Измени Задача</string>
+</resources>

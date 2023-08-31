@@ -1,5 +1,22 @@
 <resources>
-    <string name="app_name">ToDoList</string>
-    <string name="reverse_order">Newest First</string>
+    <string name="app_name">ToDoify</string>
     <string name="credits">Credits</string>
+    <string name="oldest_first">Oldest First</string>
+    <string name="newest_first">Newest First</string>
+    <string name="created_by">Created by srbinovskia46</string>
+    <string name="all_tasks_completed">All tasks completed</string>
+    <string name="one_task_to_complete">You have 1 task to complete</string>
+    <string name="tasks_left_to_complete">You have %d tasks to complete</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="edit_button">Edit</string>
+    <string name="add_todo_button">Add ToDo</string>
+    <string name="delete_done_button">Delete Done</string>
+    <string name="hint_enter_todo">Enter ToDo</string>
+    <string name="task">Task:\n</string>
+    <string name="tasks">Tasks:\n</string>
+    <string name="other_task">" other task\n"</string>
+    <string name="other_tasks">" other tasks\n"</string>
+    <string name="edit_todo">Edit ToDo</string>
+
 </resources>

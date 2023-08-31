@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorComboBlue"
-        android:text="Edit"
+        android:text="@string/edit_button"
         android:textColor="@color/white"
         android:textColorHighlight="@color/colorComboBlue"
         android:textSize="16sp"

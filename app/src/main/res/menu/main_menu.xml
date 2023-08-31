@@ -4,7 +4,7 @@
 
 
     <item android:id="@+id/reverse_order"
-        android:title="@string/reverse_order"
+        android:title="@string/newest_first"
         app:showAsAction="never"/>
 
     <item android:id="@+id/credits"

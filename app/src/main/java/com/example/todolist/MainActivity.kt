@@ -147,15 +147,15 @@ class MainActivity : AppCompatActivity(){
             todoAdapter.reverseOrderOfItems()
             val rvTodoItems = findViewById<RecyclerView>(R.id.rvTodoItems)
             if (reverseOrder){
-                item.title = "Oldest First"
+                item.setTitle(R.string.oldest_first)
             }else
-                item.title = "Newest First"
+                item.setTitle(R.string.newest_first)
             rvTodoItems.adapter = todoAdapter
             rvTodoItems.layoutManager = LinearLayoutManager(this)
             todoAdapter.saveListToInternalStorage(this)
 
         }else if (item.itemId == R.id.credits){
-            Toast.makeText(this, "Created by srbinovskia46", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.created_by, Toast.LENGTH_LONG).show()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -188,13 +188,13 @@ class MainActivity : AppCompatActivity(){
         var notificationText = buildNotificationText(todoList)
 
         if (todoList.isEmpty()) {
-            notificationText = "All tasks completed"
+            notificationText = R.string.all_tasks_completed.toString()
         }
 
         val contentText = generateContentText(todoAdapter.getTodoItems())
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("ToDoList")
+            .setContentTitle(getString(R.string.app_name))
             .setContentText(contentText)
 //            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -213,20 +213,20 @@ class MainActivity : AppCompatActivity(){
     private fun generateContentText(todoList: List<Todo>): String{
         val countOfListItems = todoList.count()
         if (countOfListItems == 1){
-            return "You have 1 task to complete"
+            return getString(R.string.one_task_to_complete)
         }else if (countOfListItems == 0){
-            return  "All tasks completed"
+            return  getString(R.string.all_tasks_completed)
         }else{
-            return String.format("You have %d tasks to complete", countOfListItems)
+            return String.format(getString(R.string.tasks_left_to_complete), countOfListItems)
         }
     }
 
     private fun buildNotificationText(todoList: List<Todo>): String {
         val stringBuilder = StringBuilder()
         if (todoList.size == 1){
-            stringBuilder.append("Task:\n")
+            stringBuilder.append(getString(R.string.task))
         }else{
-            stringBuilder.append("Tasks:\n")
+            stringBuilder.append(getString(R.string.tasks))
         }
 
         if (todoList.size <= 5){
@@ -239,9 +239,9 @@ class MainActivity : AppCompatActivity(){
                 if (counter == 5){
                     val otherTasks = todoList.size - 5
                     if (otherTasks == 1)
-                        stringBuilder.append("+").append("1 ").append("other task")
+                        stringBuilder.append("+1").append(getString(R.string.other_task))
                     else
-                        stringBuilder.append("+").append(todoList.size - 5).append(" other tasks")
+                        stringBuilder.append("+").append(todoList.size - 5).append(getString(R.string.other_tasks))
                     break
                 }
 
@@ -279,7 +279,7 @@ class MainActivity : AppCompatActivity(){
         editTodoTitle.setText(todo.title)
 
         val alertDialog = AlertDialog.Builder(this)
-            .setTitle("Edit Todo")
+            .setTitle(getString(R.string.edit_todo))
             .setView(dialogView)
 //            .setPositiveButton("Save") { _, _ ->
 //                val editedTitle = editTodoTitle.text.toString()
