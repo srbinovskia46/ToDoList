@@ -8,8 +8,11 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.AudioAttributes
+import android.media.AudioManager.STREAM_MUSIC
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,12 +26,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(){
 
     private lateinit var todoAdapter: ToDoAdapter
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     val CHANNEL_ID = "channelID"
     val CHANNEL_NAME = "channel name"
     val NOTIFICATION_ID = 0
@@ -38,12 +48,25 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Set up permission request launcher for notification
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+            if (it){
+
+            }else{
+                Snackbar.make(
+                findViewById<View>(androidx.appcompat.R.id.content).rootView,
+                "Please grant Notification permission from App Settings",
+                Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
+
         createNotificationChannel()
 
         // Change the color of ActionBar background
         supportActionBar!!.setBackgroundDrawable(ColorDrawable(Color.parseColor("#2196F3")))
         // Change the color of action bar text
-        supportActionBar?.setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.app_name) + "</font>"))
+        supportActionBar?.title = Html.fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.app_name) + "</font>")
 
         todoAdapter = ToDoAdapter(mutableListOf()){
             todo -> showEditDialog(todo)
@@ -149,8 +172,19 @@ class MainActivity : AppCompatActivity(){
         return pendingIntent
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @SuppressLint("MissingPermission")
     fun showToDoListNotification(todoList: List<Todo>) {
+        if (ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.POST_NOTIFICATIONS,
+        ) == PackageManager.PERMISSION_GRANTED)
+        {
+
+        }else{
+            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+
         var notificationText = buildNotificationText(todoList)
 
         if (todoList.isEmpty()) {
@@ -226,9 +260,10 @@ class MainActivity : AppCompatActivity(){
                 CHANNEL_ID, CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                lightColor = Color.YELLOW
+                lightColor = Color.BLUE
                 enableLights(true)
             }
+            channel.setSound(null, AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION).build())
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
