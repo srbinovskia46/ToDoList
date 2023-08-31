@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(){
                         todoAdapter.addTodo(todo)
                         rvTodoItems.smoothScrollToPosition(todoList.size-1)
                     }
-
+                    showToDoListNotification(todoAdapter.getTodoItems())
                     etTodoTitle.text.clear()
                 }
                 return@setOnEditorActionListener true
@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity(){
         var notificationText = buildNotificationText(todoList)
 
         if (todoList.isEmpty()) {
-            notificationText = R.string.all_tasks_completed.toString()
+            notificationText = getString(R.string.all_tasks_completed)
         }
 
         val contentText = generateContentText(todoAdapter.getTodoItems())
