@@ -68,8 +68,9 @@ class MainActivity : AppCompatActivity(){
         // Change the color of action bar text
         supportActionBar?.title = Html.fromHtml("<font color=\"#FFFFFF\">" + getString(R.string.app_name) + "</font>")
 
-        todoAdapter = ToDoAdapter(mutableListOf()){
-            todo -> showEditDialog(todo)
+        todoAdapter = ToDoAdapter(this, mutableListOf()){
+            todo -> showEditDialog(todo);
+
         }
 
         val rvTodoItems = findViewById<RecyclerView>(R.id.rvTodoItems)
@@ -103,6 +104,7 @@ class MainActivity : AppCompatActivity(){
                         todoAdapter.addTodo(todo)
                         rvTodoItems.smoothScrollToPosition(todoList.size-1)
                     }
+                    todoAdapter.saveListToInternalStorage(this)
                     showToDoListNotification(todoAdapter.getTodoItems())
                     etTodoTitle.text.clear()
                 }

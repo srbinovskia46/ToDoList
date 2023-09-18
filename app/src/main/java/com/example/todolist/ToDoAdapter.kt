@@ -15,6 +15,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 class ToDoAdapter(
+    private val context: Context,
     private val todos: MutableList<Todo>,
     private val onEditClickListener: ((Todo) -> Unit)? = null
 ) : RecyclerView.Adapter<ToDoAdapter.TodoViewHolder>() {
@@ -58,7 +59,7 @@ class ToDoAdapter(
         return todos.size
     }
 
-    private fun toggleStrikeThrough(tvTodoTitle: TextView, isChecked: Boolean) {
+    private fun updateTextViewStyle(tvTodoTitle: TextView, isChecked: Boolean) {
         if (isChecked) {
             tvTodoTitle.paintFlags = tvTodoTitle.paintFlags or STRIKE_THRU_TEXT_FLAG
         } else {
@@ -66,21 +67,28 @@ class ToDoAdapter(
         }
     }
 
+    private fun toggleStrikeThrough(todo: Todo, tvTodoTitle: TextView){
+        todo.isChecked = !todo.isChecked
+        updateTextViewStyle(tvTodoTitle, todo.isChecked)
+        saveListToInternalStorage(context)
+    }
+
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         val curTodo = todos[position]
         holder.itemView.apply {
             holder.tvTodoTitle.text = curTodo.title
             holder.cbDone.isChecked = curTodo.isChecked
-            toggleStrikeThrough(holder.tvTodoTitle, curTodo.isChecked)
+            updateTextViewStyle(holder.tvTodoTitle, curTodo.isChecked)
+
             holder.cbDone.setOnCheckedChangeListener { _, isChecked ->
-                toggleStrikeThrough(holder.tvTodoTitle, isChecked)
-                curTodo.isChecked = !curTodo.isChecked
+                toggleStrikeThrough(curTodo, holder.tvTodoTitle)
+                curTodo.isChecked = isChecked
+                saveListToInternalStorage(context)
             }
 
             holder.btnEdit.setOnClickListener {
                 onEditClickListener?.invoke(curTodo)
             }
-
         }
     }
 
